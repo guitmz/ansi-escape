@@ -9,15 +9,15 @@ entry $										; entrypoint is current address ($)
 
 	lea rsi, [save_buffer]					; loading rsi with ANSI code that saves current terminal buffer
 	mov rdx, save_buffer_size				; loading rdx with save ANSI code size
-    mov rdi, STDOUT
-    mov rax, SYS_WRITE
-    syscall									; saving current terminal
+	mov rdi, STDOUT
+	mov rax, SYS_WRITE
+	syscall									; saving current terminal
 
 	lea rsi, [clear_screen]					; loading rsi with ANSI code that clears screen
 	mov rdx, clear_screen_size				; loading rdx with clear screen ANSI code size
-    mov rdi, STDOUT
-    mov rax, SYS_WRITE
-    syscall									; clearing the screen
+	mov rdi, STDOUT
+	mov rax, SYS_WRITE
+	syscall									; clearing the screen
 	
 	xor rdi, rdi							; this means fd will be STDIN (same as "mov rdi, STDIN")
 	mov rsi, TIOCGWINSZ						; ioctl command to get window size
@@ -29,9 +29,9 @@ entry $										; entrypoint is current address ($)
 
 	lea rsi, [cursor_buffer]				; loading rsi with ANSI code that moves cursor
 	mov rdx, rax							; loading rdx with proper code length (without trailing null character)
-    mov rdi, STDOUT						
-    mov rax, SYS_WRITE						; in this program, the cursor will be set to the center of the screen
-    syscall									; moving cursor to (x, y)
+	mov rdi, STDOUT
+	mov rax, SYS_WRITE						; in this program, the cursor will be set to the center of the screen
+	syscall									; moving cursor to (x, y)
 
 	xor rbx, rbx							; zeroing rbx to use it as index for message buffer		
 	mov rcx, msg_size						; loading rcx with the message size
@@ -43,7 +43,7 @@ entry $										; entrypoint is current address ($)
 	mov rdx, 1								; length (rdx) is 1 since we are outputting a single byte at a time
    	mov rdi, STDOUT						
    	mov rax, SYS_WRITE						
-    syscall									; prints msg[rbx] to STDOUT
+	syscall									; prints msg[rbx] to STDOUT
 
 	cmp byte [rsi], 0xa						; checking if current character is new line (\n)
   	jne .continue							; if not, skip .moveCursor and continue
@@ -53,9 +53,9 @@ entry $										; entrypoint is current address ($)
 
 		lea rsi, [cursor_buffer]			; loading rsi with ANSI code that moves cursor
 		mov rdx, rax						; loading rdx with proper code length (without trailing null character)
-	    mov rdi, STDOUT						
-	    mov rax, SYS_WRITE
-	    syscall								; moving cursor to (x, y)
+		mov rdi, STDOUT
+		mov rax, SYS_WRITE
+		syscall								; moving cursor to (x, y)
 	.continue:
 		mov rdi, delay						; loading rdi with delay struct that contains seconds and nanoseconds to sleep
 		xor rsi, rsi						; zeroing rsi because its not being used at this time
