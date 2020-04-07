@@ -61,7 +61,7 @@ create_cursor:
     mov byte [rdi], 0x48                ; the 'H' character
 
     lea rdi, [cursor_buffer]	        ; loading rdi with ANSI code that moves cursor ("ESC[x;yH")
-	call strLen					        ; calculating code lenght from [cursor_buffer], result in rax
+    call strLen                         ; calculating code lenght from [cursor_buffer], result in rax
     ret
 
 ; converts bytes to ascii
@@ -111,37 +111,37 @@ copySrc:
      ret         
 
 ; Converts numbers to string (adapted from https://board.flatassembler.net/topic.php?p=178500)
-; RSI = address of source buffer with message to print
-; RDX = lenght of RSI buffer
-itoa:                                           ; void itoa(int, char*); eax = dividend
-        push rbx                             ; esi = char*
-        mov     ax, dx                        ; eax = dividend
-        xor     rcx, rcx                        ; string buffer index
-        mov     rbx, 10                        ; divisor
+; RSI = address of buffer to store converted result
+; RDX = bytes to convert to string
+itoa:
+        push rbx                        ; saving rbx
+        mov ax, dx                      ; load numerator into ax
+        xor rcx, rcx                    ; byte buffer index
+        mov rbx, 10                     ; denominator
 
 conversion_loop:
-        xor     rdx, rdx
-        div     rbx                             ; eax   = edx:eax/ebx
-        add     rdx, '0'                        ; convert int to ascii
-        push    rdx
-        inc     rcx
-        test    rax, rax
-        jz      end_conversion_loop
-        jmp     conversion_loop
+        xor rdx, rdx
+        div rbx                         ; rax = rdx:rax/rbx
+        add rdx, '0'                    ; convert int in rdx to ascii
+        push rdx
+        inc rcx
+        test rax, rax
+        jz end_conversion_loop
+        jmp conversion_loop
 
 end_conversion_loop:
-        mov     rdx, rsi                        ; string buffer
+        mov rdx, rsi
 
 copy_reversing_loop:
-        pop     rax
-        mov     byte    [rdx], al
-        dec     rcx
-        inc     rdx
-        test    rcx, rcx
-        jz      end_copy_reversing_loop
-        jmp     copy_reversing_loop
+        pop rax
+        mov byte [rdx], al
+        dec rcx
+        inc rdx
+        test rcx, rcx
+        jz end_copy_reversing_loop
+        jmp copy_reversing_loop
         
 end_copy_reversing_loop:
-        mov     byte    [rdx], 0
+        mov byte [rdx], 0
         pop rbx
         ret
