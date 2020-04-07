@@ -61,7 +61,7 @@ create_cursor:
     mov byte [rdi], 0x48                ; the 'H' character
 
     lea rdi, [cursor_buffer]	        ; loading rdi with ANSI code that moves cursor ("ESC[x;yH")
-	call strLen					        ; calculating code lenght from [cursor_buffer], result in rax
+    call strLen					        ; calculating code lenght from [cursor_buffer], result in rax
     ret
 
 ; converts bytes to ascii
